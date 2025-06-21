@@ -1,5 +1,51 @@
-# Vue 3 + Vite
+# 🚢 Turista Trámites - Sistema de Gestión Aduanera
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Sistema web para la gestión de trámites aduaneros de vehículos de turistas.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 🚀 Tecnologías
+
+- **Frontend**: Vue.js 3 + Vue Router + Vite
+- **Backend**: Vercel Serverless Functions
+- **Deploy**: Vercel desde GitHub
+
+## 🌐 Deploy Automático
+
+### Subir a GitHub y Deploy en Vercel:
+
+1. **Push a GitHub**:
+   ```bash
+   git add .
+   git commit -m "Deploy to production"
+   git push origin main
+   ```
+
+2. **Conectar en Vercel**:
+   - Ir a [vercel.com](https://vercel.com)
+   - "New Project" → Import from GitHub
+   - Seleccionar este repositorio
+   - Deploy automático ✅
+
+## 👥 Usuarios de Prueba
+
+- **Admin**: `admin@aduana.com` / `admin123`
+- **Turista**: `turista@example.com` / `turista123`
+- **Funcionario**: `funcionario@aduana.com` / `func123`
+
+## 🎯 Funcionalidades
+
+- ✅ Sistema de autenticación completo
+- ✅ Panel de Turista
+- ✅ Panel de Funcionario  
+- ✅ Panel de Auditoría
+- ✅ Formulario de Vehículos
+
+## 📡 API Endpoints
+
+- `POST /api/login` - Autenticación
+- `POST /api/register` - Registro
+- `GET /api/tramites` - Listar trámites
+- `POST /api/tramites` - Crear trámite
+
+---
+
+**🚀 Listo para producción en Vercel!**
