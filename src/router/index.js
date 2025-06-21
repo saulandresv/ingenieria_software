@@ -5,6 +5,7 @@ import FuncionarioPanel from '../views/FuncionarioPanel.vue';
 import AuditoriaPanel from '../views/AuditoriaPanel.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
+import ClaveUnica from '../views/ClaveUnica.vue';
 
 const routes = [
   { path: '/', name: 'home', component: TuristaPanel },
@@ -13,6 +14,7 @@ const routes = [
   { path: '/auditoria', name: 'auditoria', component: AuditoriaPanel },
   { path: '/login', name: 'login', component: Login },
   { path: '/register', name: 'register', component: Register },
+  { path: '/clave-unica', name: 'clave-unica', component: ClaveUnica },
 ];
 
 export default createRouter({
