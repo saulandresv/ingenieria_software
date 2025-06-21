@@ -162,10 +162,23 @@ export default {
         // Simular delay de validación oficial
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const isValid = await auth.login(userData.email, userData.password);
+        const userRole = await auth.login(userData.email, userData.password);
         
-        if (isValid) {
-          this.$router.push({ name: "home" });
+        if (userRole) {
+          // Redirigir según el rol del usuario
+          switch (userRole) {
+            case 'turista':
+              this.$router.push({ name: "turista" });
+              break;
+            case 'funcionario':
+              this.$router.push({ name: "funcionario" });
+              break;
+            case 'auditor':
+              this.$router.push({ name: "auditoria" });
+              break;
+            default:
+              this.$router.push({ name: "turista" });
+          }
         } else {
           this.errorMessage = "Error interno. Contacta al administrador.";
         }

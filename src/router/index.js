@@ -8,11 +8,11 @@ import Register from '../views/Register.vue';
 import ClaveUnica from '../views/ClaveUnica.vue';
 
 const routes = [
-  { path: '/', name: 'home', component: TuristaPanel },
+  { path: '/', name: 'login', component: Login },
+  { path: '/turista', name: 'turista', component: TuristaPanel },
   { path: '/formulario', name: 'formulario', component: FormularioVehiculo },
   { path: '/funcionario', name: 'funcionario', component: FuncionarioPanel },
   { path: '/auditoria', name: 'auditoria', component: AuditoriaPanel },
-  { path: '/login', name: 'login', component: Login },
   { path: '/register', name: 'register', component: Register },
   { path: '/clave-unica', name: 'clave-unica', component: ClaveUnica },
 ];

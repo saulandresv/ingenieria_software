@@ -80,9 +80,22 @@ export default {
       this.errorMessage = "";
       
       try {
-        const isValid = await auth.login(this.email, this.password);
-        if (isValid) {
-          this.$router.push({ name: "home" });
+        const userRole = await auth.login(this.email, this.password);
+        if (userRole) {
+          // Redirigir según el rol del usuario
+          switch (userRole) {
+            case 'turista':
+              this.$router.push({ name: "turista" });
+              break;
+            case 'funcionario':
+              this.$router.push({ name: "funcionario" });
+              break;
+            case 'auditor':
+              this.$router.push({ name: "auditoria" });
+              break;
+            default:
+              this.$router.push({ name: "turista" });
+          }
         } else {
           this.errorMessage = "Credenciales inválidas. Verifica tu email y contraseña.";
         }
