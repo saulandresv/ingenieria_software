@@ -15,33 +15,18 @@ export default async function handler(req, res) {
 
   try {
     const keys = await redis.keys('tramites:*');
-    const enRevision = [];
+    const todosLosTramites = [];
 
     for (const key of keys) {
       const tramites = await redis.get(key);
-
       if (Array.isArray(tramites)) {
-        for (const t of tramites) {
-          if (t.estado === 'En revisión') {
-            // Aseguramos los campos que frontend espera
-            enRevision.push({
-              id: t.id,
-              nombre: t.nombre || '',
-              apellido: t.apellido || '',
-              rut: t.rut || '',
-              tipo: t.tipo || '',
-              descripcion: t.descripcion || '',
-              estado: t.estado,
-              created_at: t.created_at || new Date().toISOString(),
-            });
-          }
-        }
+        todosLosTramites.push(...tramites);
       }
     }
 
-    return res.status(200).json({ tramites: enRevision });
+    return res.status(200).json({ tramites: todosLosTramites });
   } catch (error) {
-    console.error('Error obteniendo trámites en revisión:', error);
+    console.error('Error obteniendo trámites:', error);
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 }
