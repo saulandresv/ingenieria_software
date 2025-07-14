@@ -238,11 +238,11 @@
         </div>
       </form>
     </div>
-  </div>
-</template>
-
-<script>
-export default {
+    </div>
+  </template>
+  
+  <script>
+  export default {
   name: "FormularioVehiculo",
   data() {
     return {
@@ -374,8 +374,8 @@ export default {
       this.$router.push('/');
     }
   }
-};
-</script>
+  };
+  </script>
 
 <style scoped>
 .formulario-vehiculo {

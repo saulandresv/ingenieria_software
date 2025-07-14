@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+    <div class="login-container">
     <div class="login-card">
       <div class="login-header">
         <h1>Sistema Aduana</h1>
@@ -59,27 +59,27 @@
       </div>
     </div>
   </div>
-</template>
+  </template>
+  
+  <script>
+  import auth from "@/services/auth";
 
-<script>
-import auth from "@/services/auth";
-
-export default {
-  name: "LoginView",
-  data() {
-    return {
+  export default {
+    name: "LoginView",
+    data() {
+      return {
       email: "",
-      password: "",
+        password: "",
       loading: false,
       errorMessage: "",
-    };
-  },
-  methods: {
-    async handleLogin() {
+      };
+    },
+    methods: {
+      async handleLogin() {
       this.loading = true;
       this.errorMessage = "";
       
-      try {
+        try {
         const userRole = await auth.login(this.email, this.password);
         if (userRole) {
           // Redirigir según el rol del usuario
@@ -99,19 +99,19 @@ export default {
         } else {
           this.errorMessage = "Credenciales inválidas. Verifica tu email y contraseña.";
         }
-      } catch (error) {
-        console.error("Login error:", error);
+        } catch (error) {
+          console.error("Login error:", error);
         this.errorMessage = "Error de conexión. Intenta nuevamente.";
       } finally {
         this.loading = false;
-      }
+        }
+      },
     },
-  },
-};
-</script>
-
-<style scoped>
-.login-container {
+  };
+  </script>
+  
+  <style scoped>
+  .login-container {
   min-height: 100vh;
   background: #f8f9fa;
   display: flex;
@@ -126,12 +126,12 @@ export default {
   border-radius: 12px;
   box-shadow: 0 2px 20px rgba(0,0,0,0.1);
   width: 100%;
-  max-width: 400px;
+    max-width: 400px;
   border: 1px solid #e9ecef;
 }
 
 .login-header {
-  text-align: center;
+    text-align: center;
   margin-bottom: 30px;
 }
 
@@ -140,8 +140,8 @@ export default {
   margin-bottom: 8px;
   font-size: 1.75rem;
   font-weight: 600;
-}
-
+  }
+  
 .login-header p {
   color: #6c757d;
   margin: 0;
@@ -150,14 +150,14 @@ export default {
 
 .form-group {
   margin-bottom: 20px;
-}
-
+  }
+  
 .form-group label {
   display: block;
   margin-bottom: 6px;
   color: #495057;
   font-weight: 500;
-  font-size: 0.9rem;
+    font-size: 0.9rem;
 }
 
 .form-group input {
@@ -168,21 +168,21 @@ export default {
   font-size: 0.9rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
-}
-
+  }
+  
 .form-group input:focus {
   outline: none;
   border-color: #0d6efd;
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
+  }
+  
 .login-btn {
   width: 100%;
   background: #0d6efd;
   color: white;
   border: none;
   padding: 12px;
-  border-radius: 6px;
+    border-radius: 6px;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
@@ -217,7 +217,7 @@ export default {
   background: #dc3545;
   color: white;
   padding: 10px 20px;
-  border-radius: 6px;
+    border-radius: 6px;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9rem;
@@ -232,7 +232,7 @@ export default {
 .register-link {
   text-align: center;
   font-size: 0.9rem;
-}
+  }
 
 .register-link a {
   color: #0d6efd;
@@ -279,24 +279,24 @@ export default {
 .demo-accounts ul li {
   margin-bottom: 4px;
 }
-
+  
 /* Responsive */
-@media (max-width: 480px) {
-  .login-container {
+  @media (max-width: 480px) {
+    .login-container {
     padding: 15px;
   }
   
   .login-card {
     padding: 30px 25px;
-  }
+    }
   
   .login-header h1 {
-    font-size: 1.5rem;
+      font-size: 1.5rem;
   }
   
   .form-group input {
     font-size: 16px; /* Evita zoom en iOS */
+    }
   }
-}
-</style>
+  </style>
   

@@ -180,14 +180,14 @@
         </div>
       </div>
     </div>
-  </div>
-</template>
-
-<script>
+    </div>
+  </template>
+  
+  <script>
 import auth from '@/services/auth';
 
-export default {
-  name: "AuditoriaPanel",
+  export default {
+    name: "AuditoriaPanel",
   data() {
     return {
       tramites: [],
@@ -386,8 +386,8 @@ export default {
       this.$router.push('/login');
     }
   }
-};
-</script>
+  };
+  </script>
 
 <style scoped>
 .auditoria-panel {
