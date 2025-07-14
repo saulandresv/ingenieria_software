@@ -18,6 +18,9 @@
       <thead>
         <tr>
           <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>RUT</th>
           <th>Tipo</th>
           <th>Descripción</th>
           <th>Estado</th>
@@ -28,6 +31,9 @@
       <tbody>
         <tr v-for="tramite in tramitesFiltrados" :key="tramite.id">
           <td>{{ tramite.id }}</td>
+          <td>{{ tramite.nombre }}</td>
+          <td>{{ tramite.apellido }}</td>
+          <td>{{ tramite.rut }}</td>
           <td>{{ tramite.tipo }}</td>
           <td>{{ tramite.descripcion }}</td>
           <td>{{ tramite.estado }}</td>
@@ -72,10 +78,13 @@ export default {
   methods: {
     async obtenerTramites() {
       try {
-        const res = await fetch('/api/tramites/en_revision');
+        const token = auth.getToken();
+        const res = await fetch('/api/tramites/en_revision', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
-
-        // Verificamos si es un arreglo, si no lo es, ponemos uno vacío
         this.tramites = Array.isArray(data.tramites) ? data.tramites : [];
       } catch (err) {
         this.mensaje = 'Error al obtener los trámites.';
@@ -86,7 +95,7 @@ export default {
       return new Date(fecha).toLocaleString();
     },
     filtrarTramites() {
-      // Computed se actualiza solo.
+      // No necesario, ya lo hace computed
     },
     async actualizarEstado(tramiteId, nuevoEstado) {
       const token = auth.getToken();
