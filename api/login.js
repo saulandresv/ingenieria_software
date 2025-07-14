@@ -20,7 +20,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Parsear body manualmente
     const body = await new Promise((resolve, reject) => {
       let data = '';
       req.on('data', chunk => data += chunk);
@@ -29,7 +28,6 @@ export default async function handler(req, res) {
     });
 
     const { email, password } = body;
-
     const userKey = `user:${email}`;
     const user = await redis.get(userKey);
 
@@ -37,9 +35,20 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
+    // ✅ Guardamos también el usuario por su ID para que otros endpoints lo encuentren
+    const userByIdKey = `user:${user.id}`;
+    await redis.set(userByIdKey, {
+      id: user.id,
+      email: user.email,
+      role: user.role || 'turista',
+      password: user.password,
+    });
+
+    // ✅ Generar y guardar token
     const accessToken = Buffer.from(email + ':' + Date.now()).toString('base64');
     await redis.setex(`token:${accessToken}`, 86400, user.id);
 
+    // ✅ Respuesta exitosa
     res.json({
       accessToken,
       user: {
@@ -48,6 +57,7 @@ export default async function handler(req, res) {
         role: user.role || 'turista'
       }
     });
+
   } catch (error) {
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
