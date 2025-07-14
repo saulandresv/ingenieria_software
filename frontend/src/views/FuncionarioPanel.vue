@@ -74,12 +74,11 @@ export default {
       const token = auth.getToken();
       if (!token) {
         this.mensaje = 'No hay sesión activa.';
-        this.$router.push('/login');
         return;
       }
 
       try {
-        const res = await fetch('/api/tramites/en_revision', {
+        const res = await fetch('/api/tramites/todos', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -87,13 +86,12 @@ export default {
 
         const data = await res.json();
 
-        if (!Array.isArray(data.tramites)) {
-          this.mensaje = 'No se recibieron trámites válidos.';
+        if (Array.isArray(data.tramites)) {
+          this.tramites = data.tramites;
+        } else {
           this.tramites = [];
-          return;
+          this.mensaje = 'No se recibieron trámites.';
         }
-
-        this.tramites = data.tramites;
       } catch (err) {
         this.mensaje = 'Error al obtener los trámites.';
         console.error(err);
@@ -105,14 +103,13 @@ export default {
     },
 
     filtrarTramites() {
-      // Computed se actualiza solo
+      // El filtro es reactivo, no se requiere lógica adicional.
     },
 
     async actualizarEstado(tramiteId, nuevoEstado) {
       const token = auth.getToken();
       if (!token) {
         this.mensaje = 'No hay sesión activa.';
-        this.$router.push('/login');
         return;
       }
 
@@ -133,7 +130,7 @@ export default {
 
         if (res.ok) {
           this.mensaje = `Trámite ${tramiteId} actualizado a "${nuevoEstado}".`;
-          await this.obtenerTramites(); // recarga los trámites actualizados
+          await this.obtenerTramites();
         } else {
           this.mensaje = data.error || 'Error al actualizar el trámite.';
         }
