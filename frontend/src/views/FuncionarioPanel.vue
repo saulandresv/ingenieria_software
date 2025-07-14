@@ -72,7 +72,9 @@ export default {
       try {
         const res = await fetch('/api/tramites/en_revision');
         const data = await res.json();
-        this.tramites = data.tramites || [];
+
+        // Verificamos si es un arreglo, si no lo es, ponemos uno vacío
+        this.tramites = Array.isArray(data.tramites) ? data.tramites : [];
       } catch (err) {
         this.mensaje = 'Error al obtener los trámites.';
         console.error(err);
