@@ -104,11 +104,16 @@ function getUserEmail() {
   return localStorage.getItem("userEmail");
 }
 
+function getToken() {
+  return localStorage.getItem("accessToken");
+}
+
 export default {
   login,
   register,
   logout,
   getUserRole,
   getUserEmail,
+  getToken,
   isLogged: () => isAuthenticated.value
 };

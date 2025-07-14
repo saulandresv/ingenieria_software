@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import auth from '@/services/auth';
 export default {
   data() {
     return {
@@ -87,7 +88,7 @@ export default {
       // Computed se actualiza solo.
     },
     async actualizarEstado(tramiteId, nuevoEstado) {
-      const token = localStorage.getItem('token');
+      const token = auth.getToken();
       if (!token) {
         this.mensaje = 'No hay sesión activa.';
         return;
