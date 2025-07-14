@@ -32,10 +32,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Faltan datos requeridos' });
     }
 
-    // Buscar trámites de todos los usuarios (supone que conoces los ID de usuarios)
-    const users = ['user_1', 'user_2', 'user_3'];
-    let actualizado = false;
+    const ESTADOS_VALIDOS = ['Aprobado', 'Rechazado'];
+    if (!ESTADOS_VALIDOS.includes(nuevo_estado)) {
+      return res.status(400).json({ error: 'Estado inválido' });
+    }
 
+    // Buscar trámites de todos los usuarios
+    const users = ['user_1', 'user_2', 'user_3'];
     for (const uid of users) {
       const key = `tramites:${uid}`;
       const tramites = await redis.get(key) || [];
@@ -43,15 +46,16 @@ export default async function handler(req, res) {
       const index = tramites.findIndex(t => t.id === tramite_id);
       if (index !== -1) {
         tramites[index].estado = nuevo_estado;
+        tramites[index].actualizado_por = userId;
+        tramites[index].fecha_actualizacion = new Date().toISOString();
+
         await redis.set(key, tramites);
-        actualizado = true;
+
         return res.json({ message: 'Trámite actualizado', tramite: tramites[index] });
       }
     }
 
-    if (!actualizado) {
-      return res.status(404).json({ error: 'Trámite no encontrado' });
-    }
+    return res.status(404).json({ error: 'Trámite no encontrado' });
 
   } catch (error) {
     console.error('Error al actualizar trámite:', error);
