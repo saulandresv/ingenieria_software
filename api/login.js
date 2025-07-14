@@ -7,12 +7,10 @@ const redis = new Redis({
 });
 
 export default async function handler(req, res) {
-  // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Manejar preflight OPTIONS
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -21,10 +19,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  const { email, password } = req.body;
-
   try {
-    // Buscar usuario en Redis
+    // Parsear body manualmente
+    const body = await new Promise((resolve, reject) => {
+      let data = '';
+      req.on('data', chunk => data += chunk);
+      req.on('end', () => resolve(JSON.parse(data)));
+      req.on('error', err => reject(err));
+    });
+
+    const { email, password } = body;
+
     const userKey = `user:${email}`;
     const user = await redis.get(userKey);
 
@@ -32,10 +37,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
-    // Generar token simple
     const accessToken = Buffer.from(email + ':' + Date.now()).toString('base64');
-    
-    // Guardar token en Redis con expiración (24 horas)
     await redis.setex(`token:${accessToken}`, 86400, user.id);
 
     res.json({
@@ -50,4 +52,4 @@ export default async function handler(req, res) {
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
-} 
+}
