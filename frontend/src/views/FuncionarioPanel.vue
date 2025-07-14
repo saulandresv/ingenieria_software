@@ -1,79 +1,143 @@
 <template>
-  <div>
+  <div class="panel-funcionario">
     <h2>Panel del Funcionario</h2>
-    <div v-if="tramites.length === 0">
-      <p>No hay trámites en revisión.</p>
+
+    <div>
+      <label for="estado">Filtrar por estado:</label>
+      <select id="estado" v-model="filtroEstado" @change="filtrarTramites">
+        <option value="">Todos</option>
+        <option value="En revisión">En revisión</option>
+        <option value="Aprobado">Aprobado</option>
+        <option value="Rechazado">Rechazado</option>
+      </select>
     </div>
-    <div v-else>
-      <div v-for="tramite in tramites" :key="tramite.id" class="tramite">
-        <p><strong>ID:</strong> {{ tramite.id }}</p>
-        <p><strong>Tipo:</strong> {{ tramite.tipo }}</p>
-        <p><strong>Descripción:</strong> {{ tramite.descripcion }}</p>
-        <p><strong>Estado:</strong> {{ tramite.estado }}</p>
-        <button @click="actualizarEstado(tramite.id, 'Aprobado')">✅ Aprobar</button>
-        <button @click="actualizarEstado(tramite.id, 'Rechazado')">❌ Rechazar</button>
-        <hr />
-      </div>
-    </div>
+
+    <div v-if="mensaje" class="mensaje">{{ mensaje }}</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo</th>
+          <th>Descripción</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="tramite in tramitesFiltrados" :key="tramite.id">
+          <td>{{ tramite.id }}</td>
+          <td>{{ tramite.tipo }}</td>
+          <td>{{ tramite.descripcion }}</td>
+          <td>{{ tramite.estado }}</td>
+          <td>{{ formatFecha(tramite.created_at) }}</td>
+          <td>
+            <button
+              v-if="tramite.estado === 'En revisión'"
+              @click="actualizarEstado(tramite.id, 'Aprobado')"
+            >
+              Aprobar
+            </button>
+            <button
+              v-if="tramite.estado === 'En revisión'"
+              @click="actualizarEstado(tramite.id, 'Rechazado')"
+            >
+              Rechazar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
+<script>
+export default {
+  data() {
+    return {
+      tramites: [],
+      filtroEstado: '',
+      mensaje: '',
+    };
+  },
+  computed: {
+    tramitesFiltrados() {
+      if (!this.filtroEstado) return this.tramites;
+      return this.tramites.filter((t) => t.estado === this.filtroEstado);
+    },
+  },
+  methods: {
+    async obtenerTramites() {
+      try {
+        const res = await fetch('/api/tramites/en_revision');
+        const data = await res.json();
+        this.tramites = data.tramites || [];
+      } catch (err) {
+        this.mensaje = 'Error al obtener los trámites.';
+        console.error(err);
+      }
+    },
+    formatFecha(fecha) {
+      return new Date(fecha).toLocaleString();
+    },
+    filtrarTramites() {
+      // Computed se actualiza solo.
+    },
+    async actualizarEstado(tramiteId, nuevoEstado) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.mensaje = 'No hay sesión activa.';
+        return;
+      }
 
-const tramites = ref([]);
+      try {
+        const res = await fetch('/api/tramites/actualizar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ tramite_id: tramiteId, nuevo_estado: nuevoEstado }),
+        });
 
-async function cargarTramites() {
-  try {
-    const response = await fetch('/api/tramites/en_revision');
-    const data = await response.json();
-    tramites.value = data.tramites || [];
-  } catch (err) {
-    console.error('Error al cargar trámites:', err);
-    tramites.value = [];
-  }
-}
+        const data = await res.json();
 
-async function actualizarEstado(tramiteId, nuevoEstado) {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await fetch('/api/tramites/actualizar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tramite_id: tramiteId,
-        nuevo_estado: nuevoEstado,
-      }),
-    });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Error al actualizar');
-
-    alert('Trámite actualizado correctamente');
-    await cargarTramites(); // recargar lista
-  } catch (err) {
-    console.error(err);
-    alert('No se pudo actualizar el trámite');
-  }
-}
-
-onMounted(() => {
-  cargarTramites();
-});
+        if (res.ok) {
+          this.mensaje = `Trámite ${tramiteId} actualizado a "${nuevoEstado}"`;
+          this.obtenerTramites();
+        } else {
+          this.mensaje = data.error || 'Error al actualizar el trámite.';
+        }
+      } catch (err) {
+        this.mensaje = 'Error al enviar la solicitud.';
+        console.error(err);
+      }
+    },
+  },
+  mounted() {
+    this.obtenerTramites();
+  },
+};
 </script>
 
 <style scoped>
-.tramite {
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #f9f9f9;
+.panel-funcionario {
+  padding: 1rem;
 }
-button {
-  margin-right: 10px;
+table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+th,
+td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+.mensaje {
+  margin-top: 1rem;
+  color: green;
 }
 </style>
