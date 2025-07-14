@@ -1,121 +1,51 @@
-# Sistema de Modernización y Fiscalización Aduanera
+# Turista Trámites
 
-## 📋 Descripción del Proyecto
+Sistema de gestión de trámites para turistas en aduanas chilenas.
 
-Sistema para digitalizar y automatizar trámites aduaneros, reduciendo tiempos de espera y mejorando la interoperabilidad entre servicios nacionales e internacionales.
+## Configuración de Base de Datos
 
-## 🎯 Propósito del Software
+### Opción Recomendada: Vercel KV
 
-El sistema busca automatizar trámites aduaneros en pasos fronterizos terrestres de Chile, con énfasis en puntos de alto flujo. Incluye validación de documentos para personas, vehículos y productos regulados.
+Para una conexión rápida y segura, usa Vercel KV:
 
-## 🏗️ Arquitectura (Modelo 4+1)
+1. **Crear proyecto en Vercel:**
+   - Ve a [vercel.com](https://vercel.com)
+   - Crea un nuevo proyecto
+   - Conecta tu repositorio de GitHub
 
-### 📖 Vista de Escenarios
-- **Actores:** Turista, Funcionario, Auditor
-- **Casos de Uso:** Gestión de trámites, validación, reportes, auditoría
+2. **Configurar Vercel KV:**
+   - En el dashboard de Vercel, ve a Storage
+   - Crea una nueva base de datos KV
+   - Copia las variables de entorno automáticamente
 
-### 🧠 Vista Lógica
-- **Entidades:** Usuario, Trámite, Documento, Auditoría, Reporte
-- **Relaciones:** Usuarios tienen roles, trámites tienen estados, auditoría registra cambios
+3. **Variables de entorno:**
+   Vercel configurará automáticamente:
+   ```
+   KV_URL=redis://...
+   KV_REST_API_URL=https://...
+   KV_REST_API_TOKEN=...
+   KV_REST_API_READ_ONLY_TOKEN=...
+   ```
 
-### ⚙️ Vista de Procesos
-1. **Autenticación** → Login con roles diferenciados
-2. **Creación de Trámite** → Formulario de salida de vehículo
-3. **Validación** → Revisión por funcionario
-4. **Decisión** → Aprobación/Rechazo con comentarios
-5. **Auditoría** → Registro y trazabilidad completa
+4. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
 
-### 🏗️ Vista de Desarrollo
-```
-src/
-├── views/           # Interfaz de usuario
-│   ├── Login.vue
-│   ├── TuristaPanel.vue
-│   ├── FormularioVehiculo.vue
-│   ├── FuncionarioPanel.vue
-│   └── AuditoriaPanel.vue
-├── services/        # Lógica de negocio
-│   └── auth.js
-├── router/          # Navegación
-│   └── index.js
-└── api/             # Servicios externos
-    ├── login.js
-    ├── register.js
-    └── tramites.js
-```
+5. **Desplegar:**
+   ```bash
+   git push origin main
+   ```
 
-### 🌐 Vista Física
-- **Frontend:** Vue.js 3 + Vite
-- **Backend:** Serverless Functions (Vercel)
-- **Base de Datos:** JSON simulada (extensible a PostgreSQL/MongoDB)
-- **Comunicación:** HTTPS + REST API
-- **Despliegue:** Vercel (GitHub integration)
+## Desarrollo
 
-## 👥 Roles del Sistema
-
-### 🚢 Turista
-- Crear trámites de salida temporal de vehículos
-- Consultar estado de trámites
-- Ver historial de solicitudes
-
-### 🏛️ Funcionario
-- Revisar trámites pendientes
-- Aprobar/rechazar con comentarios
-- Filtrar y buscar trámites
-- Validar documentación
-
-### 📊 Auditor
-- Supervisar el sistema completo
-- Generar reportes estadísticos
-- Trazabilidad de actividades
-- Análisis de tendencias
-
-## 🔧 Tecnologías Utilizadas
-
-### Frontend
-- **Vue.js 3** - Framework progressive
-- **Vue Router** - Navegación SPA
-- **CSS3** - Estilos responsivos
-- **Vite** - Build tool rápido
-
-### Backend
-- **Node.js** - Runtime JavaScript
-- **Serverless Functions** - Escalabilidad automática
-- **JSON** - Almacenamiento de datos (temporal)
-
-### Herramientas de Desarrollo
-- **npm** - Gestión de dependencias
-- **Git** - Control de versiones
-- **VS Code** - Editor de código
-
-## 🚀 Instalación y Configuración
-
-### Prerrequisitos
-- Node.js 18+ 
-- npm 9+
-- Git
-
-### Instalación Local
 ```bash
-# Clonar repositorio
-git clone [repository-url]
-cd turista-tramites
-
-# Instalar dependencias
-npm install
-
-# Ejecutar desarrollo
 npm run dev
-
-# Construir para producción
-npm run build
 ```
 
-### Variables de Entorno
-```env
-NODE_ENV=development|production
-API_BASE_URL=http://localhost:3000
-```
+## Despliegue
+
+El proyecto está configurado para desplegar en Vercel con KV como base de datos.
 
 ## 👤 Usuarios de Prueba
 

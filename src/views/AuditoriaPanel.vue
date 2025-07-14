@@ -268,7 +268,11 @@ export default {
     async loadTramites() {
       try {
         const API_BASE = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
-        const response = await fetch(`${API_BASE}/api/tramites`);
+        const response = await fetch(`${API_BASE}/api/tramites`, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+          }
+        });
         if (response.ok) {
           this.tramites = await response.json();
         }
