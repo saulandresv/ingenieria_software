@@ -71,41 +71,23 @@ export default {
   },
   methods: {
     async obtenerTramites() {
-      const token = auth.getToken();
-      if (!token) {
-        this.mensaje = 'No hay sesión activa.';
-        return;
-      }
-
       try {
-        const res = await fetch('/api/tramites/todos', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const res = await fetch('/api/tramites/en_revision');
         const data = await res.json();
 
-        if (Array.isArray(data.tramites)) {
-          this.tramites = data.tramites;
-        } else {
-          this.tramites = [];
-          this.mensaje = 'No se recibieron trámites.';
-        }
+        // Verificamos si es un arreglo, si no lo es, ponemos uno vacío
+        this.tramites = Array.isArray(data.tramites) ? data.tramites : [];
       } catch (err) {
         this.mensaje = 'Error al obtener los trámites.';
         console.error(err);
       }
     },
-
     formatFecha(fecha) {
       return new Date(fecha).toLocaleString();
     },
-
     filtrarTramites() {
-      // El filtro es reactivo, no se requiere lógica adicional.
+      // Computed se actualiza solo.
     },
-
     async actualizarEstado(tramiteId, nuevoEstado) {
       const token = auth.getToken();
       if (!token) {
@@ -120,17 +102,14 @@ export default {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            tramite_id: tramiteId,
-            nuevo_estado: nuevoEstado,
-          }),
+          body: JSON.stringify({ tramite_id: tramiteId, nuevo_estado: nuevoEstado }),
         });
 
         const data = await res.json();
 
         if (res.ok) {
-          this.mensaje = `Trámite ${tramiteId} actualizado a "${nuevoEstado}".`;
-          await this.obtenerTramites();
+          this.mensaje = `Trámite ${tramiteId} actualizado a "${nuevoEstado}"`;
+          this.obtenerTramites();
         } else {
           this.mensaje = data.error || 'Error al actualizar el trámite.';
         }
